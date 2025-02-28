@@ -41,7 +41,17 @@ async function getExchangeRates() {
 
 let rates;
 
-// Format number for display with appropriate decimals
+// Function to format numbers for sharing
+function formatForSharing(value, currency) {
+    if (currency === 'BTC' || currency === 'ETH') {
+        // For BTC and ETH, keep decimals and use dot as decimal point
+        return parseFloat(value).toFixed(currency === 'BTC' ? 8 : 6);
+    }
+    // For USD, BRL, and CLP, no decimals, use comma as thousands separator
+    return parseInt(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Use comma as thousands separator
+}
+
+// Function to format numbers for display with appropriate decimals
 function formatNumber(number, currency) {
     const options = {
         USD: { maximumFractionDigits: 0, minimumFractionDigits: 0 },
@@ -51,14 +61,16 @@ function formatNumber(number, currency) {
         ETH: { maximumFractionDigits: 6, minimumFractionDigits: 6 }
     };
 
-    return new Intl.NumberFormat('en-US', options[currency]).format(number);
+    // Format the number using the specified options
+    return new Intl.NumberFormat('en-US', options[currency]).format(number).replace(/,/g, '.'); // Replace comma with dot for decimal
 }
 
 // Parse formatted number string back to number
 function parseFormattedNumber(str) {
     if (!str) return 0;
-    const cleanStr = str.replace(/[^0-9]/g, '');
-    return cleanStr ? parseInt(cleanStr) : 0;
+    // Remove all non-numeric characters except for the decimal point
+    const cleanStr = str.replace(/[^0-9.]/g, ''); // Keep dot for parsing
+    return cleanStr ? parseFloat(cleanStr) : 0; // Use parseFloat to handle decimals
 }
 
 // Convert from USD to target currency
@@ -132,11 +144,11 @@ setInterval(updateRates, 1800000);
 
 // Function to generate a shareable URL
 function generateShareableURL() {
-    const usdValue = parseFormattedNumber(usdInput.value);
-    const brlValue = parseFormattedNumber(brlInput.value);
-    const clpValue = parseFormattedNumber(clpInput.value);
-    const btcValue = parseFormattedNumber(btcInput.value);
-    const ethValue = parseFormattedNumber(ethInput.value);
+    const usdValue = formatForSharing(usdInput.value, 'USD');
+    const brlValue = formatForSharing(brlInput.value, 'BRL');
+    const clpValue = formatForSharing(clpInput.value, 'CLP');
+    const btcValue = formatForSharing(btcInput.value, 'BTC');
+    const ethValue = formatForSharing(ethInput.value, 'ETH');
 
     // Create a URL with query parameters
     const baseURL = window.location.href.split('?')[0]; // Get the base URL without query params

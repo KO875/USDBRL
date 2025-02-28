@@ -1,85 +1,131 @@
 const usdInput = document.getElementById('usd');
 const brlInput = document.getElementById('brl');
+const clpInput = document.getElementById('clp');
+const btcInput = document.getElementById('btc');
+const ethInput = document.getElementById('eth');
 
-// Replace with your API key
-const API_KEY = 'YOUR_API_KEY';
-
-// Format number for USD (1,234)
-function formatUSD(number) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'decimal',
-        maximumFractionDigits: 0,
-        minimumFractionDigits: 0
-    }).format(number);
+// Fetch current exchange rates
+async function getExchangeRates() {
+    try {
+        // Fetch fiat rates from Open Exchange Rates
+        const fiatResponse = await fetch('https://open.er-api.com/v6/latest/USD');
+        const fiatData = await fiatResponse.json();
+        
+        // Fetch crypto rates from Binance
+        const [btcResponse, ethResponse] = await Promise.all([
+            fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
+            fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
+        ]);
+        
+        const btcData = await btcResponse.json();
+        const ethData = await ethResponse.json();
+        
+        return {
+            BRL: fiatData.rates.BRL,
+            CLP: fiatData.rates.CLP,
+            BTC: 1 / parseFloat(btcData.price),
+            ETH: 1 / parseFloat(ethData.price),
+            lastUpdated: Date.now()
+        };
+    } catch (error) {
+        console.error('Error fetching rates:', error);
+        return {
+            BRL: 4.95,    // Fallback rate
+            CLP: 969.50,  // Fallback rate
+            BTC: 0.000016, // Fallback rate
+            ETH: 0.00031,  // Fallback rate
+            lastUpdated: Date.now()
+        };
+    }
 }
 
-// Format number for BRL (1.234)
-function formatBRL(number) {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'decimal',
-        maximumFractionDigits: 0,
-        minimumFractionDigits: 0
-    }).format(number);
+let rates;
+
+// Format number for display with appropriate decimals
+function formatNumber(number, currency) {
+    const options = {
+        USD: { maximumFractionDigits: 0, minimumFractionDigits: 0 },
+        BRL: { maximumFractionDigits: 0, minimumFractionDigits: 0 },
+        CLP: { maximumFractionDigits: 0, minimumFractionDigits: 0 },
+        BTC: { maximumFractionDigits: 8, minimumFractionDigits: 8 },
+        ETH: { maximumFractionDigits: 6, minimumFractionDigits: 6 }
+    };
+
+    return new Intl.NumberFormat('en-US', options[currency]).format(number);
 }
 
 // Parse formatted number string back to number
 function parseFormattedNumber(str) {
     if (!str) return 0;
-    // Remove all non-numeric characters
     const cleanStr = str.replace(/[^0-9]/g, '');
     return cleanStr ? parseInt(cleanStr) : 0;
 }
 
-// Fetch current exchange rate
-async function getExchangeRate() {
-    try {
-        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
-        const data = await response.json();
-        return data.rates.BRL;
-    } catch (error) {
-        console.error('Error fetching exchange rate:', error);
-        return 5.04; // Fallback rate if API fails
+// Convert from USD to target currency
+function fromUSD(amount, currency) {
+    return amount * rates[currency];
+}
+
+// Convert to USD from source currency
+function toUSD(amount, currency) {
+    return amount / rates[currency];
+}
+
+// Update all inputs based on source input
+function updateInputs(sourceInput, value) {
+    const inputs = {
+        usd: usdInput,
+        brl: brlInput,
+        clp: clpInput,
+        btc: btcInput,
+        eth: ethInput
+    };
+
+    // Convert source value to USD first
+    let usdValue;
+    if (sourceInput.id === 'usd') {
+        usdValue = value;
+    } else {
+        usdValue = toUSD(value, sourceInput.id.toUpperCase());
+    }
+
+    // Update all other inputs
+    for (let [currency, input] of Object.entries(inputs)) {
+        if (input !== sourceInput) {
+            if (currency === 'usd') {
+                input.value = formatNumber(usdValue, 'USD');
+            } else {
+                input.value = formatNumber(fromUSD(usdValue, currency.toUpperCase()), currency.toUpperCase());
+            }
+        }
     }
 }
 
-let currentRate;
-
-// Get initial rate
-getExchangeRate().then(rate => {
-    currentRate = rate;
-});
-
-// Handle USD input
-usdInput.addEventListener('input', () => {
-    const usdAmount = parseFormattedNumber(usdInput.value);
-    
-    if (usdAmount === 0) {
-        usdInput.value = '';
-        brlInput.value = '';
-    } else {
-        const brlAmount = Math.round(usdAmount * currentRate);
-        usdInput.value = formatUSD(usdAmount);
-        brlInput.value = formatBRL(brlAmount);
-    }
-});
-
-// Handle BRL input
-brlInput.addEventListener('input', () => {
-    const brlAmount = parseFormattedNumber(brlInput.value);
-    
-    if (brlAmount === 0) {
-        brlInput.value = '';
-        usdInput.value = '';
-    } else {
-        const usdAmount = Math.round(brlAmount / currentRate);
-        brlInput.value = formatBRL(brlAmount);
-        usdInput.value = formatUSD(usdAmount);
-    }
-});
-
-// Update rate every hour
-setInterval(() => {
-    getExchangeRate().then(rate => {
-        currentRate = rate;
+// Add event listeners to all inputs
+[usdInput, brlInput, clpInput, btcInput, ethInput].forEach(input => {
+    input.addEventListener('input', (e) => {
+        if (document.activeElement === input) {
+            const value = parseFormattedNumber(input.value);
+            if (value === 0) {
+                // Clear all inputs if value is 0
+                [usdInput, brlInput, clpInput, btcInput, ethInput].forEach(inp => inp.value = '');
+            } else {
+                updateInputs(input, value);
+            }
+        }
     });
-}, 3600000); 
+});
+
+// Update rates every 30 minutes (1800000 milliseconds)
+function updateRates() {
+    getExchangeRates().then(newRates => {
+        rates = newRates;
+        console.log('Rates updated at:', new Date().toLocaleTimeString());
+    });
+}
+
+// Initial rates
+updateRates();
+
+// Update every 30 minutes
+setInterval(updateRates, 1800000); 

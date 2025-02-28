@@ -9,14 +9,17 @@ A minimalist Progressive Web App (PWA) that converts between USD and BRL currenc
 - Works offline (PWA)
 - Thousands formatting
 - Mobile-friendly
-- No decimals
+- No decimals for fiat currencies
+- 8 decimals for BTC
+- 6 decimals for ETH
 
 ## Tech Stack
 
 - HTML5
 - CSS3
 - JavaScript
-- Exchange Rate API
+- Binance API (Crypto rates)
+- Open Exchange Rates API (Fiat rates)
 - Inter Font
 
 ## Installation
@@ -26,14 +29,17 @@ A minimalist Progressive Web App (PWA) that converts between USD and BRL currenc
 
 ## Usage
 
-- Enter an amount in either USD or BRL field
-- The other currency will update automatically
+- Enter an amount in any currency field
+- Other fields will update automatically
 - Supports large numbers with proper formatting
 - Works offline once installed as a PWA
+- Rates update every 30 minutes
 
-## API
+## APIs
 
-This project uses the [Exchange Rate API](https://www.exchangerate-api.com/) for real-time currency conversion rates.
+This project uses:
+- [Binance API](https://binance-docs.github.io/apidocs/spot/en/) for cryptocurrency rates
+- [Open Exchange Rates](https://openexchangerates.org/) for fiat currency rates
 
 ## License
 

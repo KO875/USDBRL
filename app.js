@@ -198,4 +198,12 @@ function populateInputsFromURL() {
 }
 
 // Call the function on page load
-window.onload = populateInputsFromURL; 
+window.onload = populateInputsFromURL;
+
+// Add event listener to copy the website URL
+document.getElementById('website-url').addEventListener('click', () => {
+    const url = document.getElementById('website-url').innerText;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('Website URL copied to clipboard: ' + url);
+    });
+}); 

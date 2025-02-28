@@ -114,6 +114,15 @@ footer {
     font-size: 0.9rem;
 }
 
+footer p {
+    margin: 0.5rem 0; /* Add some margin for spacing */
+}
+
+#website-url {
+    font-weight: bold; /* Make the URL bold */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
 @media (max-width: 768px) {
     .converter {
         padding: 1rem;

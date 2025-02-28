@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USD BRL</title>
+    <title>🇺🇸 🇧🇷 Converter</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Remove hamburger menu styles */
+        .hamburger {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">USD BRL</div>
-        <div class="menu-toggle">☰</div>
-    </nav>
-    
-    <main>
+    <div class="container">
+        <h1>🇺🇸 🇧🇷 Converter</h1>
+        
         <div class="converter">
             <div class="input-group">
                 <input type="text" id="usd" placeholder="Enter USD amount" inputmode="numeric" pattern="[0-9]*">
@@ -28,10 +31,10 @@
                 <span>BRL</span>
             </div>
         </div>
-    </main>
+    </div>
 
     <footer>
-        <p>CONVERT!</p>
+        <p><a href="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHhqczl6N3Q1cjhncW9mdGZwdHlhcm9jZDJzMnY2ZTd5NzM0N3R3ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7abxtmPxanzaESGY/giphy.gif" style="color: white; text-decoration: none;">Don't click in here</a></p>
     </footer>
 
     <script src="app.js"></script>

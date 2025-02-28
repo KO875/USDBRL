@@ -128,4 +128,74 @@ function updateRates() {
 updateRates();
 
 // Update every 30 minutes
-setInterval(updateRates, 1800000); 
+setInterval(updateRates, 1800000);
+
+// Function to generate a shareable URL
+function generateShareableURL() {
+    const usdValue = parseFormattedNumber(usdInput.value);
+    const brlValue = parseFormattedNumber(brlInput.value);
+    const clpValue = parseFormattedNumber(clpInput.value);
+    const btcValue = parseFormattedNumber(btcInput.value);
+    const ethValue = parseFormattedNumber(ethInput.value);
+
+    // Create a URL with query parameters
+    const baseURL = window.location.href.split('?')[0]; // Get the base URL without query params
+    const params = new URLSearchParams({
+        usd: usdValue,
+        brl: brlValue,
+        clp: clpValue,
+        btc: btcValue,
+        eth: ethValue
+    });
+
+    return `${baseURL}?${params.toString()}`;
+}
+
+// Add event listener to the share button
+document.getElementById('shareButton').addEventListener('click', () => {
+    // Check if at least one input has a value
+    if (usdInput.value || brlInput.value || clpInput.value || btcInput.value || ethInput.value) {
+        const shareableURL = generateShareableURL();
+        // Copy the URL to clipboard
+        navigator.clipboard.writeText(shareableURL).then(() => {
+            alert('Shareable URL copied to clipboard: ' + shareableURL);
+        });
+    } else {
+        alert('Please enter at least one amount to share.');
+    }
+});
+
+// Function to populate inputs from URL parameters
+function populateInputsFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Get values from URL parameters
+    const usdValue = params.get('usd') || '';
+    const brlValue = params.get('brl') || '';
+    const clpValue = params.get('clp') || '';
+    const btcValue = params.get('btc') || '';
+    const ethValue = params.get('eth') || '';
+
+    // Set the input values
+    usdInput.value = usdValue;
+    brlInput.value = brlValue;
+    clpInput.value = clpValue;
+    btcInput.value = btcValue;
+    ethInput.value = ethValue;
+
+    // Update all inputs based on the populated values
+    if (usdValue) {
+        updateInputs(usdInput, parseFormattedNumber(usdValue));
+    } else if (brlValue) {
+        updateInputs(brlInput, parseFormattedNumber(brlValue));
+    } else if (clpValue) {
+        updateInputs(clpInput, parseFormattedNumber(clpValue));
+    } else if (btcValue) {
+        updateInputs(btcInput, parseFormattedNumber(btcValue));
+    } else if (ethValue) {
+        updateInputs(ethInput, parseFormattedNumber(ethValue));
+    }
+}
+
+// Call the function on page load
+window.onload = populateInputsFromURL; 

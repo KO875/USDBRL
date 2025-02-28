@@ -122,4 +122,24 @@ footer {
     h1 {
         font-size: 1.25rem;
     }
+}
+
+.share-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 0.75rem 1.5rem; /* Padding for the button */
+    border-radius: 25px; /* Rounded corners */
+    font-size: 1rem; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    margin-top: 1rem; /* Space above the button */
+}
+
+.share-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.share-button:focus {
+    outline: none; /* Remove outline on focus */
 } 

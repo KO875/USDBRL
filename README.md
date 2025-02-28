@@ -1,7 +1,6 @@
-@@ -0,0 +1,44 @@
 # USD BRL Converter
 
-A minimalist Progressive Web App (PWA) that converts between USD and BRL currencies in real-time.
+A minimal Progressive Web App (PWA) that converts between USD and BRL currencies in real-time.
 
 ## Features
 

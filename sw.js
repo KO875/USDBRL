@@ -3,7 +3,9 @@ const ASSETS = [
     '/USDBRL/',
     '/USDBRL/index.html',
     '/USDBRL/style.css',
-    '/USDBRL/app.js'
+    '/USDBRL/app.js',
+    '/USDBRL/gif.html',
+    '/USDBRL/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {

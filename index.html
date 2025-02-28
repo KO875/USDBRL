@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USD BRL</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="logo">USD BRL</div>
+        <div class="menu-toggle">☰</div>
+    </nav>
+    
+    <main>
+        <div class="converter">
+            <div class="input-group">
+                <input type="text" id="usd" placeholder="Enter USD amount" inputmode="numeric" pattern="[0-9]*">
+                <span>USD</span>
+            </div>
+            <div class="input-group">
+                <input type="text" id="brl" placeholder="Enter BRL amount" inputmode="numeric" pattern="[0-9]*">
+                <span>BRL</span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>CONVERT!</p>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html> 

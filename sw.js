@@ -1,9 +1,9 @@
 const CACHE_NAME = 'usd-brl-converter-v1';
 const ASSETS = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js'
+    '/USDBRL/',
+    '/USDBRL/index.html',
+    '/USDBRL/style.css',
+    '/USDBRL/app.js'
 ];
 
 self.addEventListener('install', (event) => {
